@@ -1,0 +1,11 @@
+# pip install -r requirements.txt
+
+# git+https://github.com/mind1master/rainfall#egg=rainfall
+# websockets
+# aiohttp == 0.7.3
+# aiorest == 0.0.2
+
+# /Users/negval/Code/me/Vase
+git+https://github.com/neglectedvalue/Vase
+ujson
+jsonpickle

@@ -1,0 +1,43 @@
+<div class="row">
+  <h2><%= title %></h2>
+</div>
+
+<% _.each(floors.reverse(), function (floor, floor_i) {
+     floor_i = n_floors - floor_i - 1;
+     var floor_n = floor_i + 1; %>
+  <div class="row row-floor">
+    <div class="small-1 columns row-floor-flat">
+      <% if (floor > 0) { %>
+        <span class="row-floor-label row-floor-called"><%= floor_n %></span>
+      <% } else { %>
+        <span class="row-floor-label"><%= floor_n %></span>
+      <% } %>
+    </div>
+    <div class="medium-2 columns row-floor-flat">
+      <button class="button" data-floor-action="call" data-floor-i="<%= floor_i %>">Вызвать</button>
+    </div>
+    <div class="medium-9 columns row-floor-flat end">
+      <% _.each(cars, function (car, car_i) { %>
+        <% var cls = (car.floor_approximated + 1 == floor_n) ? '' : 'hide'; %>
+        <% if (car.status != 'standby')
+             cls += ' alert' %>
+        <button class="button car <%= cls %>" data-dropdown="car-buttons-<%= car_i %>"><%= car_i + 1 %> &raquo;</button>
+      <% }); %>
+    </div>
+  </div>
+<% }); %>
+
+<% _.each(cars, function (car, car_i) { %>
+<div class="row">
+  <ul id="car-buttons-<%= car_i %>" class="f-dropdown" data-dropdown-content>
+    <li>
+      <button class="small-1 small button alert" data-car-i="<%= car_i %>" data-car-action="toggle"><i class="fi-power"></i></button>
+    </li>
+    <% for (var f = n_floors; f > 0; --f) { %>
+      <li>
+        <button class="small-1 small button" data-car-i="<%= car_i %>" data-car-action="send" data-car-floor="<%= f - 1 %>"><%= f %></button>
+      </li>
+    <% } %>
+  </ul>
+</div>
+<% }); %>

@@ -1,0 +1,49 @@
+<div class="row">
+  <h2>Построить здание</h2>
+</div>
+
+<form>
+  <div class="row">
+    <div class="medium-4 columns">
+      <label>Имя здания
+        <input type="text" name="name">
+      </label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="medium-1 columns">
+      <label class="right inline" for="n_floors">Этажей</label>
+    </div>
+    <div class="medium-1 columns">
+      <input type="text" name="n_floors">
+    </div>
+    <div class="medium-1 columns">
+      <label class="right inline" for="n_cars">Лифтов</label>
+    </div>
+    <div class="medium-1 columns end">
+      <input type="text" name="n_cars">
+    </div>
+  </div>
+  <div class="row">
+    <div class="medium-3 columns">
+      <label class="left inline" for="speed">Скорость лифта (этаж/с)</label>
+    </div>
+    <div class="medium-1 columns end">
+      <input type="text" name="speed">
+    </div>
+  </div>
+  <div class="row">
+    <div class="medium-4 columns">
+      <label>Тип здания
+        <select>
+          <option value="residential">Жилой дом</option>
+        </select>
+      </label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="medium-4 columns">
+      <input class="button" type="submit" value="Построить и разместить лифты в один клик">
+    </div>
+  </div>
+</form>
