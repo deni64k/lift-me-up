@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cd /root/src/lift-me-up
+source .venv/bin/activate
+
+exec chpst -P python run.py -p 8080

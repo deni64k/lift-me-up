@@ -11,7 +11,7 @@ def main():
     scheduler = Scheduler(state)
     scheduler.run(loop=loop)
 
-    app = create_app(state)
+    app = create_app(state, scheduler)
     app.run(port=8080, loop=loop)
 
     loop.run_forever()

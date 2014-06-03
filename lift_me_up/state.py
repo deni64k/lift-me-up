@@ -19,9 +19,6 @@ class State(object):
 
     def destroy_building(self, name):
         del self.buildings[name]
-
-    def floors_buttons_call(self, name, floor):
-        self.buildings[name].floors_buttons_call(floor)
     
     def cars_buttons_call(self, name, car, floor):
         self.buildings[name].cars_buttons_call(car, floor)
@@ -42,16 +39,6 @@ class State(object):
     
     def __setstate__(self, state):
         self.buildings = state['buildings']
-    
-    # fname = 'state.jsonpickle'
-    # @classmethod
-    # def load(cls):
-    #     with open(cls.fname, 'r') as f:
-    #         return jsonpickle.decode(f.read())
-        
-    # def save(self):
-    #     with open(self.__class__.fname, 'w') as f:
-    #         f.write(jsonpickle.encode(self))
 
     fname = 'state.pickle'
     @classmethod

@@ -1,5 +1,5 @@
 ;(function () {
-  var $refresher = null;
+  window.$refresher = null;
 
   var AboutCtrl = function (hash) {
     getHtml('about').then(function (html) {
@@ -46,12 +46,7 @@
 
       var refreshBuilding = function () {
         getBuildingStatus(name)
-        .catch(function () {
-          if ($refresher) {
-            clearInterval($refresher);
-            $refresher = null;
-          }
-        })
+        .catch(killRefresher)
         .then(function (resp) {
           var status = resp.status
             , locals = status
@@ -62,7 +57,7 @@
           html = $(_.template(template, locals));
           _.each(_.zip($('.row-floor-label'), html.find('.row-floor-label')), _updateClass);
           _.each(_.zip($('.button.car'), html.find('.button.car')), _updateClass);
-        });
+        }).then(runRefresher);
       };
       var renderBuilding = function () {
         getBuildingStatus(name).then(function (resp) {
@@ -105,8 +100,21 @@
         });
       };
 
+      var runRefresher = function () {
+        if (window.$refresher == null) {
+          window.$refresher = setInterval(_.bind(refreshBuilding, this), 1000);
+        }
+      }
+
+      var killRefresher = function () {
+        if (window.$refresher) {
+          clearInterval(window.$refresher);
+          window.$refresher = null;
+        }
+      }
+
       renderBuilding();
-      $refresher = setInterval(_.bind(refreshBuilding, this), 1000);
+      runRefresher();
     });
   };
 

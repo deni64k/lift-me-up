@@ -9,7 +9,7 @@ import ujson as json
 from .simple_json_rpc import SimpleJsonRpc
 from .subscriptions_service import subscriptions_service
 
-def create_app(state):
+def create_app(state, scheduler):
     app = Vase(__name__)
 
     def _jsonify(obj={}):
@@ -27,53 +27,55 @@ def create_app(state):
     #
     @app.route(path="/", methods=("GET"))
     def root(request):
-        body = open(os.path.join(os.path.dirname(__file__), 'static', 'index.html'), 'r').read()
+        body = open(os.path.join(os.path.dirname(__file__), 'static', 'index.html'), 'r', encoding='utf-8').read()
         return HttpResponse(body, content_type="text/html")
 
     @app.route(path="/html/{fname}", methods=("GET"))
     def html(request, fname):
-        body = open(os.path.join(os.path.dirname(__file__), 'static/html', fname), 'r').read()
+        body = open(os.path.join(os.path.dirname(__file__), 'static/html', fname), 'r', encoding='utf-8').read()
         return HttpResponse(body, content_type="text/html")
 
     @app.route(path="/js/{fname}", methods=("GET"))
     def js(request, fname):
-        body = open(os.path.join(os.path.dirname(__file__), 'static/js', fname), 'r').read()
+        body = open(os.path.join(os.path.dirname(__file__), 'static/js', fname), 'r', encoding='utf-8').read()
         return HttpResponse(body, content_type="application/javascript")
 
     @app.route(path="/css/{fname}", methods=("GET"))
     def css(request, fname):
-        body = open(os.path.join(os.path.dirname(__file__), 'static/css', fname), 'r').read()
+        body = open(os.path.join(os.path.dirname(__file__), 'static/css', fname), 'r', encoding='utf-8').read()
         return HttpResponse(body, content_type="text/css")
 
     #
     # The resource buildings
     #
-    @app.route(path="/api/v1/buildings/{building}/cars/{car:\d+}/buttons/{floor:\d+}")
+    @app.route(path="/api/v1/buildings/{building}/cars/{car:\d+}/buttons/{floor:\d+}", methods="POST")
     def car_buttons_floor(request, building, car: int, floor: int):
         car   = int(car)
         floor = int(floor)
         print("Send the car {} to the floor {}".format(car, floor))
         state.cars_buttons_call(building, car, floor)
+        scheduler.schedule_car(building, car)
         _broadcast_status(building=building)
         return _jsonify()
 
-    @app.route(path="/api/v1/buildings/{building}/cars/{car}/buttons/toggle")
+    @app.route(path="/api/v1/buildings/{building}/cars/{car}/buttons/toggle", methods="POST")
     def car_buttons_stop(request, building, car: int):
         car   = int(car)
         print("Stop the car {}".format(car))
         state.cars_buttons_toggle(building, car)
+        scheduler.schedule_car(building, car)
         _broadcast_status(building=building)
         return _jsonify()
 
-    @app.route(path="/api/v1/buildings/{building}/floors/{floor:\d+}/buttons/call")
+    @app.route(path="/api/v1/buildings/{building}/floors/{floor:\d+}/buttons/call", methods="POST")
     def floors_buttons_call(request, building, floor: int):
         floor = int(floor)
         print("Call the Nearest Car on the floor {}".format(floor))
-        state.floors_buttons_call(building, floor)
+        scheduler.call_car(building, floor)
         _broadcast_status(building=building)
         return _jsonify()
 
-    @app.route(path="/api/v1/buildings", methods=("POST"))
+    @app.route(path="/api/v1/buildings", methods="POST")
     def buildings_post(request):
         data     = json.loads((yield from request.body.read()).decode('utf-8'))
         name     = str(data['name'])
@@ -85,18 +87,18 @@ def create_app(state):
         _broadcast_status()
         return _jsonify()
 
-    @app.route(path="/api/v1/buildings/{building}", methods=("DELETE"))
+    @app.route(path="/api/v1/buildings/{building}", methods="DELETE")
     def buildings_delete(request, building):
         print("Destroy the building \"{}\".".format(building))
         state.destroy_building(building)
         _broadcast_status()
         return _jsonify()
 
-    @app.route(path="/api/v1/buildings/{building}/status")
+    @app.route(path="/api/v1/buildings/{building}/status", methods="GET")
     def buildings_status(request, building):
         return _jsonify({'status': state.buildings[building].__dict__()})
 
-    @app.route(path="/api/v1/status")
+    @app.route(path="/api/v1/status", methods="GET")
     def status(request):
         return _jsonify({'status': state.__dict__()})
 
