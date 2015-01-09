@@ -6,6 +6,6 @@
 # aiorest == 0.0.2
 
 # /Users/negval/Code/me/Vase
-git+https://github.com/neglectedvalue/Vase
+https://github.com/neglectedvalue/Vase/archive/master.zip#egg=Vase
 ujson
 jsonpickle
