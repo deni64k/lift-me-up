@@ -1,9 +1,9 @@
 Lift Me Up
 ==========
 
-**[Демо](http://illiteracy.ru:8080/)**
+**[Демо](http://lift-me-up.illiteracy.ru/)**
 
-**[«О приложении»](http://illiteracy.ru:8080/#about)**
+**[«О приложении»](http://lift-me-up.illiteracy.ru/#about)**
 
 Установка
 ---------
